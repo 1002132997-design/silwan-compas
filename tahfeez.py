@@ -80,4 +80,65 @@ with tabs[0]:
     
     st.subheader("🖋️ مهارات الكتابة")
     ara_w = ["المسكة الصحيحة للقلم", "النسخ المنظم (غيباً ونقلاً)", "الكتابة على السطر", "تنظيم الحيز البصري للدفت"]
-    res_ara_w = [smart_eval(t, f"ar_w_{i}", opt_edu) for i, t in
+    res_ara_w = [smart_eval(t, f"ar_w_{i}", opt_edu) for i, t in enumerate(ara_w)]
+    
+    st.subheader("🖋️ التعبير الكتابي والشفوي")
+    ara_e = ["التعبير الشفوي الواضح", "سرد قصة منطقياً", "كتابة جملة وصفية", "ترابط الأفكار كتابياً"]
+    res_ara_e = [smart_eval(t, f"ar_e_{i}", opt_edu) for i, t in enumerate(ara_e)]
+    
+    st.subheader("🖋️ مهارات الإملاء")
+    ara_s = ["الإملاء المنظور", "الإملاء الغيبي", "قواعد الإملاء (تاء، تنوين، همزة)"]
+    res_ara_s = [smart_eval(t, f"ar_s_{i}", opt_edu) for i, t in enumerate(ara_s)]
+
+with tabs[1]:
+    st.markdown("<div class='section-head'>🧮 مهارات الرياضيات (المسح المهاري)</div>", unsafe_allow_html=True)
+    math_tasks = [
+        "العد والملاءمة (كمية/عدد)", "القيمة المنزلية (آحاد/عشرات/مئات)", 
+        "الجمع البسيط", "الجمع مع حمل", "الطرح البسيط", "الطرح مع استلاف",
+        "جداول الضرب", "القسمة البسيطة", "مسائل كلامية (مرحلة واحدة)", 
+        "مسائل كلامية (متعددة المراحل)", "الهندسة والقياس"
+    ]
+    res_mat = [smart_eval(t, f"ma_{i}", opt_edu) for i, t in enumerate(math_tasks)]
+
+with tabs[2]:
+    st.markdown("<div class='section-head'>🤝 الجانب الاجتماعي (مهارات التفاعل)</div>", unsafe_allow_html=True)
+    soc_tasks = ["تكوين صداقات", "المشاركة والتعاون الجماعي", "تبادل الأدوار", "حل النزاعات سلمياً", "فهم القواعد الاجتماعية"]
+    res_soc = [smart_eval(t, f"so_{i}", opt_freq) for i, t in enumerate(soc_tasks)]
+
+with tabs[3]:
+    st.markdown("<div class='section-head'>❤️ الجانب العاطفي (النضج والوعي)</div>", unsafe_allow_html=True)
+    emo_tasks = ["التعبير عن الذات والمشاعر", "الثقة بالنفس والمبادرة", "تقبل النقد أو الخسارة", "التعاطف مع الآخرين", "ضبط الانفعالات"]
+    res_emo = [smart_eval(t, f"em_{i}", opt_freq) for i, t in enumerate(emo_tasks)]
+
+with tabs[4]:
+    st.markdown("<div class='section-head'>🎭 الجانب السلوكي (الانضباط والوظيفة)</div>", unsafe_allow_html=True)
+    beh_tasks = ["الالتزام بدستور الصف", "التركيز والاستمرار بالمهمة", "الانتقال بين الفعاليات", "تنظيم الأدوات والحقيبة", "المحافظة على الممتلكات"]
+    res_beh = [smart_eval(t, f"be_{i}", opt_freq) for i, t in enumerate(beh_tasks)]
+
+with tabs[5]:
+    st.markdown("<div class='section-head'>🌟 نقاط القوة والتميز</div>", unsafe_allow_html=True)
+    strengths = st.text_area("ما هي مواهب الطالب أو المجالات التي يبدع فيها؟", height=100)
+
+# --- التقرير النهائي ---
+if st.button("📄 توليد المسح المهاري الكامل"):
+    all_res = "\n".join(res_ara_r + res_ara_w + res_ara_e + res_ara_s + res_mat + res_soc + res_emo + res_beh)
+    report = f"""
+🧭 تقرير بوصلة مدرسة سلوان - المسح المهاري الشامل 2026
+--------------------------------------------------
+البيانات التعريفية:
+- الاسم: {s_name} | الصف: {s_class}
+- عدد الإخوة: {siblings_count} | الترتيب: {student_rank}
+- الحالة العائلية: {f_status}
+
+📊 النتائج التفصيلية:
+{all_res}
+
+🌟 نقاط القوة:
+{strengths}
+--------------------------------------------------
+إعداد المربي/ة: {mrbia} | مركزة التربية الخاصة: مها سرحان
+مدرسة سلوان الابتدائية الجديدة 2026
+شكراً لتعاونكم وأمانتكم المهنية.
+"""
+    st.text_area("التقرير جاهز:", report, height=450)
+    st.success("تم توليد التقرير بنجاح. شكراً!")
