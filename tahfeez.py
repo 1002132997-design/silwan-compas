@@ -1,7 +1,7 @@
 import streamlit as st
 from datetime import date
 
-# إعدادات الصفحة - نسخة مدرسة سلوان التشخيصية 2026
+# إعدادات الصفحة
 st.set_page_config(page_title="بوصلة مدرسة سلوان - المسح المهاري", layout="wide")
 
 st.markdown("""
@@ -20,24 +20,23 @@ st.markdown("""
     <div class="footer">مشروع بوصلة سلوان - إعداد مركزة التربية الخاصة: مها سرحان © 2026 | مدرسة سلوان الابتدائية الجديدة</div>
     """, unsafe_allow_html=True)
 
-# --- عرض الشعار والعنوان ---
-try:
-    st.image("logo.png", width=180)
-except:
-    st.info("💡 ملاحظة: يظهر هنا شعار المدرسة الرسمي (logo.png).")
+# --- الشعار والعنوان ---
+col1, col2, col3 = st.columns([1, 2, 1])
+with col2:
+    try:
+        st.image("logo.png", width=200) # تأكدي من رفع ملف باسم logo.png
+    except:
+        st.info("💡 ملاحظة للمربي: يرجى رفع ملف الشعار باسم logo.png")
+    st.markdown("<h1 class='main-title'>🧭 بوصلة مدرسة سلوان - المسح التشخيصي المهاري</h1>", unsafe_allow_html=True)
 
-st.markdown("<h1 class='main-title'>🧭 بوصلة مدرسة سلوان - المسح المهاري الشامل</h1>", unsafe_allow_html=True)
-
-# --- قسم الإرشادات ---
+# --- ميثاق المربي ---
 st.markdown("""
 <div class='instruction-box'>
     <h3>📜 عزيزي المربي / المربية.. رفيق الدرب</h3>
     <p>
-    بين يديك أمانة تحديد المستوى المهاري للطالب بدقة. يرجى تعبئة التقييم بناءً على <b>الأداء الفعلي</b> للطالب في الصف:
-    <br>
-    <b>- الأمانة المهنية:</b> التقييم الدقيق هو أول خطوة في تقديم الدعم الصحيح.
-    <br>
-    <b>- الشمولية:</b> يرجى تقييم كل مهارة فرعية على حدة لرسم خارطة طريق واضحة.
+    بين يديك أمانة عظيمة، يرجى تعبئة هذا المسح المهاري بدقة متناهية. 
+    تقييمك هو حجر الأساس في بناء مستقبل الطالب التعليمي، فكن دقيقاً، أميناً، وموضوعياً. 
+    إن مسؤولية الكلمة هنا هي أمانة مهنية وأخلاقية تجاه الطالب وأسرته.
 </p>
 </div>
 """, unsafe_allow_html=True)
@@ -65,71 +64,20 @@ with c3:
     siblings_count = st.number_input("عدد الإخوة الإجمالي:", min_value=0, step=1)
     student_rank = st.text_input("ترتيب الطالب بين إخوته:")
 
-# --- 2. المسح المهاري (التبويبات) ---
-tabs = st.tabs(["📖 اللغة العربية (بالمهارات)", "🧮 الرياضيات (بالمهارات)", "🌟 نقاط القوة", "🤝 الاجتماعي والعاطفي", "🎭 السلوكي والنمائي"])
+living_info = st.text_input("مع من يعيش الطالب؟ (في حال الانفصال)") if f_status == "منفصلون" else ""
+
+# --- 2. التبويبات المهارية التفصيلية ---
+tabs = st.tabs(["📖 اللغة العربية", "🧮 الرياضيات", "🤝 الاجتماعي", "❤️ العاطفي", "🎭 السلوكي", "🌟 نقاط القوة"])
 
 opt_edu = ["يتقن", "يتقن جزئياً", "يتقن بوساطة", "لم يكتسبها"]
 opt_freq = ["دائماً", "غالباً", "أحياناً", "نادراً", "أبداً"]
 
 with tabs[0]:
-    st.markdown("<div class='section-head'>📚 مهارات اللغة العربية التفصيلية</div>", unsafe_allow_html=True)
-    st.subheader("🎯 مهارات القراءة والوعي الصوتي")
-    ara_read = ["تمييز الحروف وأصواتها", "تركيب الحروف لبناء كلمة", "قراءة كلمات وجمل مشكولة", "الطلاقة القرائية في نص كامل"]
-    res_ara_r = [smart_eval(t, f"ar_r_{i}", opt_edu) for i, t in enumerate(ara_read)]
+    st.markdown("<div class='section-head'>📚 مهارات اللغة العربية (المسح المهاري)</div>", unsafe_allow_html=True)
+    st.subheader("🖋️ مهارات القراءة")
+    ara_r = ["تمييز الحروف (اسماً وصوتاً)", "تحليل وتركيب الكلمات", "قراءة جمل مشكولة", "الطلاقة القرائية (نص)", "فهم المقروء (مباشر واستنتاجي)"]
+    res_ara_r = [smart_eval(t, f"ar_r_{i}", opt_edu) for i, t in enumerate(ara_r)]
     
-    st.subheader("🎯 مهارات الفهم والاستيعاب")
-    ara_comp = ["فهم المعنى الصريح والمباشر", "استنتاج أحداث ومعانٍ خفية", "تمييز الفكرة المركزية للنص"]
-    res_ara_c = [smart_eval(t, f"ar_c_{i}", opt_edu) for i, t in enumerate(ara_comp)]
-    
-    st.subheader("🎯 مهارات الكتابة والإملاء")
-    ara_write = ["النسخ المنظم والدقيق", "الإملاء المنظور (كلمات مدروسة)", "الإملاء الغيبي (كلمات جديدة)", "تمييز القواعد (تاء، تنوين، همزة)", "صياغة جمل مفيدة للتعبير"]
-    res_ara_w = [smart_eval(t, f"ar_w_{i}", opt_edu) for i, t in enumerate(ara_write)]
-
-with tabs[1]:
-    st.markdown("<div class='section-head'>🧮 مهارات الرياضيات التفصيلية</div>", unsafe_allow_html=True)
-    st.subheader("🔢 الأعداد والعمليات")
-    math_num = ["العد والملاءمة (كمية/عدد)", "تمييز القيمة المنزلية (آحاد/عشرات/مئات)", "الجمع البسيط (بدون حمل)", "الجمع مع حمل (إعادة تسمية)", "الطرح البسيط (بدون استقراض)", "الطرح مع استقراض (استلاف)"]
-    res_mat_n = [smart_eval(t, f"ma_n_{i}", opt_edu) for i, t in enumerate(math_num)]
-    
-    st.subheader("🔢 مهارات متقدمة")
-    math_adv = ["حفظ وفهم جداول الضرب", "القسمة البسيطة", "حل مسائل كلامية (مرحلة واحدة)", "حل مسائل كلامية (متعددة المراحل)", "فهم مفاهيم الهندسة والقياس"]
-    res_mat_a = [smart_eval(t, f"ma_a_{i}", opt_edu) for i, t in enumerate(math_adv)]
-
-with tabs[2]:
-    st.markdown("<div class='section-head'>🌟 نقاط القوة والتميز</div>", unsafe_allow_html=True)
-    strengths = st.text_area("ما هي المهارات التي يتفوق فيها الطالب؟", height=100)
-
-with tabs[3]:
-    st.markdown("<div class='section-head'>🤝 الجانب الاجتماعي والعاطفي</div>", unsafe_allow_html=True)
-    soc_tasks = ["بناء علاقات مع الأقران", "التعبير عن المشاعر لفظياً", "الثقة بالنفس والمبادرة", "حل النزاعات سلمياً"]
-    res_soc = [smart_eval(t, f"soc_{i}", opt_freq) for i, t in enumerate(soc_tasks)]
-
-with tabs[4]:
-    st.markdown("<div class='section-head'>🎭 الجانب السلوكي والنمائي</div>", unsafe_allow_html=True)
-    beh_tasks = ["الالتزام بدستور المدرسة", "ضبط النفس والانفعالات", "الإصغاء والتركيز خلال الحصة", "المسكة القلمية والتحكم الحركي"]
-    res_beh = [smart_eval(t, f"beh_{i}", opt_freq) for i, t in enumerate(beh_tasks)]
-
-# --- توليد التقرير النهائي ---
-st.markdown("---")
-if st.button("📄 توليد المسح المهاري الكامل"):
-    all_res = "\n".join(res_ara_r + res_ara_c + res_ara_w + res_mat_n + res_mat_a + res_soc + res_beh)
-    report = f"""
-🧭 تقرير بوصلة مدرسة سلوان - المسح المهاري 2026 🧭
------------------------------------------------------------
-1. البيانات الأساسية:
-- الاسم: {s_name} | الهوية: {s_id} | الصف: {s_class}
-- عدد الإخوة: {siblings_count} | ترتيب الطالب: {student_rank}
-- التاريخ: {date.today()} | المربي/ة: {mrbia}
-
-2. 🌟 نقاط القوة:
-{strengths if strengths else 'لم تذكر.'}
-
-3. 📊 نتائج المسح المهاري التفصيلية:
-{all_res}
-
------------------------------------------------------------
-إعداد: طاقم مدرسة سلوان | مركزة التربية الخاصة: مها سرحان
-"تمت التعبئة بأمانة ومسؤولية مهنية"
-"""
-    st.text_area("التقرير جاهز للنسخ:", report, height=500)
-    st.success("تم التحديث! المهارات التعليمية الآن مفصلة بدقة.")
+    st.subheader("🖋️ مهارات الكتابة")
+    ara_w = ["المسكة الصحيحة للقلم", "النسخ المنظم (غيباً ونقلاً)", "الكتابة على السطر", "تنظيم الحيز البصري للدفت"]
+    res_ara_w = [smart_eval(t, f"ar_w_{i}", opt_edu) for i, t in
