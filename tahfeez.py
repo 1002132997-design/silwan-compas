@@ -20,7 +20,7 @@ st.markdown("""
     .section-head { background-color: #f1f8e9; padding: 8px; border-right: 5px solid #2e7d32; border-radius: 5px; color: #1b5e20; font-weight: bold; margin: 15px 0 10px 0; }
     .stRadio > div { flex-direction: row !important; gap: 15px; }
     </style>
-    <div class="footer">فكرة وتطوير: مها سرحان © 2024 | مدرسة سلوان الابتدائية الجديدة</div>
+    <div class="footer">فكرة وتطوير: مها سرحان © 2026 | مدرسة سلوان الابتدائية الجديدة</div>
     """, unsafe_allow_html=True)
 
 # --- الترويسة ---
