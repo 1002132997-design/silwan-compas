@@ -64,4 +64,48 @@ with tabs[0]:
     st.markdown("<div class='section-head'>🌟 نقاط القوة والتميز</div>", unsafe_allow_html=True)
     strengths = st.text_area("ما الذي يجعل هذا الطالب متميزاً؟ (مواهب، دافعية، ذكاء اجتماعي...)", height=150)
 
-with tabs
+with tabs[1]:
+    st.markdown("<div class='section-head'>الجانب الاجتماعي والعاطفي</div>", unsafe_allow_html=True)
+    s_list = ["بناء علاقات مع الأقران", "التعبير عن المشاعر", "المبادرة بالحديث", "تقبل القوانين الاجتماعية"]
+    res_s = [smart_eval(s, f"s_{i}", opt_social, v) for i, s in enumerate(s_list)]
+
+with tabs[2]:
+    st.markdown("<div class='section-head'>الجانب السلوكي والنمائي</div>", unsafe_allow_html=True)
+    b_list = ["الالتزام بدستور الصف", "ضبط النفس عند الغضب", "تنظيم الأدوات", "الإصغاء المتواصل"]
+    res_b = [smart_eval(b, f"b_{i}", opt_beh, v) for i, b in enumerate(b_list)]
+
+with tabs[3]:
+    st.markdown("<div class='section-head'>الجانب التعليمي: اللغة العربية</div>", unsafe_allow_html=True)
+    l_list = ["تمييز الحروف وأصواتها", "الطلاقة في القراءة", "فهم المقروء (مستوى 1)", "النسخ والكتابة المنظمة"]
+    res_l = [smart_eval(l, f"l_{i}", opt_edu, v) for i, l in enumerate(l_list)]
+
+with tabs[4]:
+    st.markdown("<div class='section-head'>الجانب التعليمي: الرياضيات (تفصيلي)</div>", unsafe_allow_html=True)
+    m_list = ["العد والملاءمة (كمية/عدد)", "الجمع والطرح (حتى 20)", "الجمع والطرح (حتى 100)", "المسائل الكلامية", "القيمة المنزلية", "الهندسة والقياس"]
+    res_m = [smart_eval(m, f"m_{i}", opt_edu, v) for i, m in enumerate(m_list)]
+
+# --- 3. توليد التقرير ---
+if st.button("📄 إصدار التقرير النهائي المفصل"):
+    all_res = "\n".join(res_s + res_b + res_l + res_m)
+    report = f"""
+🧭 تقرير بوصلة مدرسة سلوان - الإصدار الشامل 2026 🧭
+-----------------------------------------------------------
+البيانات الشخصية والاجتماعية:
+- الاسم: {s_name} | الجنس: {gender}
+- التاريخ: {date.today()} | الصف: {s_class}
+- الحالة العائلية: {f_status} | {living_with if living_with else ''}
+- الإخوة: {siblings_count} إخوة (ترتيبه: {rank})
+- الوصف الجسدي: {body_desc}
+-----------------------------------------------------------
+🌟 نقاط القوة:
+{strengths}
+
+📊 التوصيف الوظيفي والمهارات:
+{all_res}
+-----------------------------------------------------------
+إعداد المربي/ة: {mrbia}
+مركزة التربية الخاصة: مها سرحان | مدير المدرسة: يحيى نابلسي
+تم التوليد بواسطة "بوصلة سلوان" الذكية 2026 ©
+"""
+    st.text_area("التقرير جاهز للنسخ:", report, height=500)
+    st.success("تم التحديث بنجاح! الخيارات الآن مخصصة لكل محور.")
