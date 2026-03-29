@@ -1,8 +1,8 @@
 import streamlit as st
 from datetime import date
 
-# إعدادات الصفحة - مدرسة سلوان 2026
-st.set_page_config(page_title="بوصلة مدرسة سلوان - المسح المهاري", layout="wide")
+# إعدادات الصفحة
+st.set_page_config(page_title="بوصلة مدرسة سلوان - التقرير الوصفي", layout="wide")
 
 st.markdown("""
     <style>
@@ -14,30 +14,23 @@ st.markdown("""
     .main-title { color: #00695c; text-align: center; border-bottom: 2px solid #009688; padding-bottom: 10px; }
     .section-head { background-color: #e8f5e9; padding: 10px; border-right: 12px solid #2e7d32; border-radius: 5px; color: #1b5e20; font-weight: bold; margin: 25px 0 10px 0; }
     .instruction-box { background-color: #fff9c4; padding: 20px; border-right: 10px solid #fbc02d; border-radius: 10px; color: #5d4037; font-size: 16px; margin-bottom: 25px; line-height: 1.6; }
-    .stTabs [data-baseweb="tab-list"] { display: flex; flex-wrap: wrap; gap: 8px; }
-    .stTabs [data-baseweb="tab"] { background-color: #f1f8e9; border-radius: 8px; padding: 10px 20px; color: #1b5e20; font-weight: bold; border: 1px solid #c8e6c9; }
     </style>
     <div class="footer">مشروع بوصلة سلوان - إعداد مركزة التربية الخاصة: مها سرحان © 2026 | مدرسة سلوان الابتدائية الجديدة</div>
     """, unsafe_allow_html=True)
 
 # --- الشعار والعنوان ---
-col1, col2, col3 = st.columns([1, 2, 1])
-with col2:
-    try:
-        st.image("logo.png", width=200)
-    except:
-        st.info("💡 ملاحظة للمربي: يرجى رفع ملف الشعار باسم logo.png")
-    st.markdown("<h1 class='main-title'>🧭 بوصلة مدرسة سلوان - المسح التشخيصي المهاري</h1>", unsafe_allow_html=True)
+try:
+    st.image("logo.png", width=180)
+except:
+    st.info("💡 ملاحظة: ارفعي الشعار باسم logo.png ليظهر هنا.")
+
+st.markdown("<h1 class='main-title'>🧭 بوصلة مدرسة سلوان - التقرير الوصفي الشامل</h1>", unsafe_allow_html=True)
 
 # --- ميثاق المربي ---
 st.markdown("""
 <div class='instruction-box'>
     <h3>📜 عزيزي المربي / المربية.. رفيق الدرب</h3>
-    <p>
-    بين يديك أمانة عظيمة، يرجى تعبئة هذا المسح المهاري بدقة متناهية. 
-    تقييمك هو حجر الأساس في بناء مستقبل الطالب التعليمي، فكن دقيقاً، أميناً، وموضوعياً. 
-    إن مسؤولية الكلمة هنا هي أمانة مهنية وأخلاقية تجاه الطالب وأسرته.
-</p>
+    <p>بين يديك أمانة كتابة "قصة نجاح أو تحدي" لطالبك. يرجى وصف المهارات بدقة، فالتفاصيل الصغيرة هي التي تصنع الفارق في التشخيص والدعم.</p>
 </div>
 """, unsafe_allow_html=True)
 
@@ -46,7 +39,7 @@ def smart_eval(label, key, options):
     col_t, col_c = st.columns([2, 2.5])
     with col_t: st.markdown(f"**{label}**")
     with col_c: res = st.radio("", options, key=key, horizontal=True, label_visibility="collapsed")
-    return f"- {label}: ({res})"
+    return label, res
 
 # --- 1. البيانات التعريفية ---
 st.markdown("<div class='section-head'>📋 أولاً: البيانات التعريفية والاجتماعية</div>", unsafe_allow_html=True)
@@ -61,78 +54,79 @@ with c2:
     f_status = st.selectbox("الحالة الاجتماعية للوالدين:", ["متزوجون", "منفصلون", "أرمل/ة"])
 with c3:
     mrbia = st.text_input("اسم المربي/ة:")
-    siblings_count = st.number_input("عدد الإخوة الإجمالي:", min_value=0, step=1)
-    student_rank = st.text_input("ترتيب الطالب بين إخوته:")
+    siblings_count = st.number_input("عدد الإخوة:", min_value=0, step=1)
+    student_rank = st.text_input("ترتيب الطالب:")
 
-living_info = st.text_input("مع من يعيش الطالب؟ (في حال الانفصال)") if f_status == "منفصلون" else ""
-
-# --- 2. التبويبات المهارية التفصيلية ---
+# --- 2. التبويبات المهارية ---
 tabs = st.tabs(["📖 اللغة العربية", "🧮 الرياضيات", "🤝 الاجتماعي", "❤️ العاطفي", "🎭 السلوكي", "🌟 نقاط القوة"])
-
 opt_edu = ["يتقن", "يتقن جزئياً", "يتقن بوساطة", "لم يكتسبها"]
 opt_freq = ["دائماً", "غالباً", "أحياناً", "نادراً", "أبداً"]
 
 with tabs[0]:
     st.markdown("<div class='section-head'>📚 مهارات اللغة العربية</div>", unsafe_allow_html=True)
-    st.subheader("🖋️ مهارات القراءة")
-    res_ara_r = [smart_eval(t, f"ar_r_{i}", opt_edu) for i, t in enumerate(["تمييز الحروف (اسماً وصوتاً)", "تحليل وتركيب الكلمات", "قراءة جمل مشكولة", "الطلاقة القرائية (نص)", "فهم المقروء (مباشر واستنتاجي)"])]
-    st.subheader("🖋️ مهارات الكتابة")
-    res_ara_w = [smart_eval(t, f"ar_w_{i}", opt_edu) for i, t in enumerate(["المسكة الصحيحة للقلم", "النسخ المنظم (غيباً ونقلاً)", "الكتابة على السطر", "تنظيم الحيز البصري"])]
-    st.subheader("🖋️ التعبير الكتابي والشفوي")
-    res_ara_e = [smart_eval(t, f"ar_e_{i}", opt_edu) for i, t in enumerate(["التعبير الشفوي الواضح", "سرد قصة منطقياً", "كتابة جملة وصفية", "ترابط الأفكار كتابياً"])]
-    st.subheader("🖋️ مهارات الإملاء")
-    res_ara_s = [smart_eval(t, f"ar_s_{i}", opt_edu) for i, t in enumerate(["الإملاء المنظور", "الإملاء الغيبي", "قواعد الإملاء (تاء، تنوين، همزة)"])]
-    obs_ara = st.text_area("ملاحظات إضافية لمحور اللغة العربية (اختياري):", key="obs_ara")
+    r1 = [smart_eval(t, f"ar_r_{i}", opt_edu) for i, t in enumerate(["تمييز الحروف", "تحليل الكلمات", "الطلاقة القرائية", "فهم المقروء"])]
+    r2 = [smart_eval(t, f"ar_w_{i}", opt_edu) for i, t in enumerate(["مسكة القلم", "النسخ المنظم", "الكتابة على السطر"])]
+    r3 = [smart_eval(t, f"ar_e_{i}", opt_edu) for i, t in enumerate(["التعبير الشفوي", "سرد قصة", "ترابط الأفكار"])]
+    obs_ara = st.text_area("إضافات وصفية للغة العربية:", key="obs_ara")
 
 with tabs[1]:
     st.markdown("<div class='section-head'>🧮 مهارات الرياضيات</div>", unsafe_allow_html=True)
-    res_mat = [smart_eval(t, f"ma_{i}", opt_edu) for i, t in enumerate(["العد والملاءمة (كمية/عدد)", "القيمة المنزلية", "الجمع البسيط", "الجمع مع حمل", "الطرح البسيط", "الطرح مع استلاف", "جداول الضرب", "القسمة البسيطة", "مسائل كلامية (مرحلة واحدة)", "مسائل كلامية (متعددة المراحل)", "الهندسة والقياس"])]
-    obs_mat = st.text_area("ملاحظات إضافية لمحور الرياضيات (اختياري):", key="obs_mat")
+    m1 = [smart_eval(t, f"ma_{i}", opt_edu) for i, t in enumerate(["العد والملاءمة", "القيمة المنزلية", "الجمع مع حمل", "الطرح مع استلاف", "جداول الضرب", "مسائل كلامية"])]
+    obs_mat = st.text_area("إضافات وصفية للرياضيات:", key="obs_mat")
 
 with tabs[2]:
     st.markdown("<div class='section-head'>🤝 الجانب الاجتماعي</div>", unsafe_allow_html=True)
-    res_soc = [smart_eval(t, f"so_{i}", opt_freq) for i, t in enumerate(["تكوين صداقات", "المشاركة والتعاون الجماعي", "تبادل الأدوار", "حل النزاعات سلمياً", "فهم القواعد الاجتماعية"])]
-    obs_soc = st.text_area("ملاحظات إضافية للجانب الاجتماعي (اختياري):", key="obs_soc")
+    s1 = [smart_eval(t, f"so_{i}", opt_freq) for i, t in enumerate(["تكوين صداقات", "المشاركة الجماعية", "حل النزاعات سلمياً"])]
+    obs_soc = st.text_area("إضافات وصفية للجانب الاجتماعي:", key="obs_soc")
 
 with tabs[3]:
     st.markdown("<div class='section-head'>❤️ الجانب العاطفي</div>", unsafe_allow_html=True)
-    res_emo = [smart_eval(t, f"em_{i}", opt_freq) for i, t in enumerate(["التعبير عن الذات والمشاعر", "الثقة بالنفس والمبادرة", "تقبل النقد أو الخسارة", "التعاطف مع الآخرين", "ضبط الانفعالات"])]
-    obs_emo = st.text_area("ملاحظات إضافية للجانب العاطفي (اختياري):", key="obs_emo")
+    e1 = [smart_eval(t, f"em_{i}", opt_freq) for i, t in enumerate(["التعبير عن المشاعر", "الثقة بالنفس", "ضبط الانفعالات"])]
+    obs_emo = st.text_area("إضافات وصفية للجانب العاطفي:", key="obs_emo")
 
 with tabs[4]:
     st.markdown("<div class='section-head'>🎭 الجانب السلوكي</div>", unsafe_allow_html=True)
-    res_beh = [smart_eval(t, f"be_{i}", opt_freq) for i, t in enumerate(["الالتزام بدستور الصف", "التركيز والاستمرار بالمهمة", "الانتقال بين الفعاليات", "تنظيم الأدوات والحقيبة", "المحافظة على الممتلكات"])]
-    obs_beh = st.text_area("ملاحظات إضافية للجانب السلوكي (اختياري):", key="obs_beh")
+    b1 = [smart_eval(t, f"be_{i}", opt_freq) for i, t in enumerate(["الالتزام بالدستور", "التركيز الصفي", "تنظيم الأدوات"])]
+    obs_beh = st.text_area("إضافات وصفية للجانب السلوكي:", key="obs_beh")
 
 with tabs[5]:
-    st.markdown("<div class='section-head'>🌟 نقاط القوة والتميز</div>", unsafe_allow_html=True)
-    strengths = st.text_area("ما هي مواهب الطالب أو المجالات التي يبدع فيها؟", height=150)
+    st.markdown("<div class='section-head'>🌟 نقاط القوة</div>", unsafe_allow_html=True)
+    strengths = st.text_area("تحدث عن مواهب الطالب وما يميز شخصيته:", height=150)
 
-# --- التقرير النهائي ---
-if st.button("📄 توليد المسح المهاري الكامل"):
-    all_res = "\n".join(res_ara_r + res_ara_w + res_ara_e + res_ara_s + res_mat + res_soc + res_emo + res_beh)
-    all_obs = f"\nملاحظات إضافية:\nالعربي: {obs_ara}\nالرياضيات: {obs_mat}\nالاجتماعي: {obs_soc}\nالعاطفي: {obs_emo}\nالسلوكي: {obs_beh}"
+# --- توليد التقرير السردي ---
+if st.button("📄 توليد التقرير الوصفي النهائي"):
+    v = "الطالب" if gender == "ذكر" else "الطالبة"
     
+    # بناء الفقرات
+    p1 = f"يظهر في الجانب الأكاديمي للغة العربية أن {v} {r1[0][1]} مهارة تمييز الحروف، بينما {r1[2][1]} مهارة الطلاقة القرائية. وفيما يخص الكتابة، فإن {v} {r2[1][1]} النسخ المنظم. {obs_ara}"
+    
+    p2 = f"وفي مهارات الرياضيات، تبين أن القدرة على العد والملاءمة {m1[0][1]}، بينما تبرز الحاجة لدعم في الجمع مع الحمل حيث {v} {m1[2][1]} هذه المهارة، وكذلك الطرح مع الاستلاف الذي {m1[3][1]}. {obs_mat}"
+    
+    p3 = f"اجتماعياً وعاطفياً، يلاحظ أن {v} {s1[0][1]} يبادر لتكوين الصداقات، و{e1[1][1]} يظهر ثقة بالنفس أثناء المهام. {obs_soc} {obs_emo}"
+    
+    p4 = f"سلوكياً، يلتزم {v} بدستور الصف بشكل {b1[0][1]}، ويظهر مستوى تركيز {b1[1][1]} خلال الحصص الدراسية. {obs_beh}"
+
     report = f"""
-🧭 تقرير بوصلة مدرسة سلوان - المسح المهاري الشامل 2026
---------------------------------------------------
+تقرير وصفي شامل - مدرسة سلوان الابتدائية
+---------------------------------------
 البيانات التعريفية:
-- الاسم: {s_name} | الصف: {s_class}
-- عدد الإخوة: {siblings_count} | الترتيب: {student_rank}
-- الحالة العائلية: {f_status}
+الاسم: {s_name} | الصف: {s_class} | ترتيبه بين إخوته الـ {siblings_count}: {student_rank}.
 
-📊 النتائج التفصيلية:
-{all_res}
+الجانب الأكاديمي (اللغة العربية والرياضيات):
+{p1}
+{p2}
 
-📝 ملاحظات المربي الإضافية:
-{all_obs}
+الجانب الاجتماعي والعاطفي والسلوكي:
+{p3}
+{p4}
 
-🌟 نقاط القوة:
+نقاط القوة والتميز:
 {strengths}
---------------------------------------------------
-إعداد المربي/ة: {mrbia} | مركزة التربية الخاصة: مها سرحان
-مدرسة سلوان الابتدائية الجديدة 2026
-شكراً لتعاونكم وأمانتكم المهنية.
+
+---------------------------------------
+تحريراً في: {date.today()}
+توقيع المربي/ة: {mrbia} | مركزة التربية الخاصة: مها سرحان
+"شكراً لجهودكم في رصد مصلحة الطالب"
 """
-    st.text_area("التقرير جاهز:", report, height=450)
-    st.success("تم توليد التقرير بنجاح بما يشمل الملاحظات الاختيارية. شكراً!")
+    st.text_area("التقرير الوصفي السردي (جاهز للنسخ):", report, height=600)
+    st.success("تم تحويل التقرير إلى أسلوب سردي وصفي بعيداً عن الروبوتية.")
